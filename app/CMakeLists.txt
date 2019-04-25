@@ -21,6 +21,7 @@ add_library( # Sets the name of the library.
 
              # Provides a relative path to your source file(s).
              src/main/cpp/native-lib.cpp
+             src/main/cpp/decrypt.cpp
              src/main/cpp/encrypt.cpp )
 
 # Searches for a specified prebuilt library and stores the path as a

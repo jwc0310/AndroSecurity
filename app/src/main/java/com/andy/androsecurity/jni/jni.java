@@ -7,11 +7,15 @@ public class jni {
     }
 
     public static String getStringFromJNI() {
-        return stringFromJNI();
+        return stringFromJNIEncrypt();
     }
 
     public static int encryptSo() {
         return encryptSO();
+    }
+
+    public static int decryptSo() {
+        return decryptSO();
     }
 
     private static native String stringFromJNI();
@@ -19,4 +23,6 @@ public class jni {
     private static native String stringFromJNIEncrypt();
 
     private static native int encryptSO();
+
+    private static native int decryptSO();
 }

@@ -24,9 +24,17 @@
     不同的人有不同的加密算法
     本文算法：字节取反
         encrypt.c中，核心逻辑
-        寻找encrypt的section， 然后字节取反写会，同时将一些值计算了写入ehdr.e_entry(这个对于正常的so是0值)
+        寻找encrypt的section， 然后字节取反写回，
+        同时将这些值计算了写入ehdr.e_entry(这个对于正常的so是0值)
         和ehdr.e_shoff（这个是section表的偏移量，修改这个值将导致找不到section，后面会看到加密效果），
         这些值在解密的时候需要。
+
+4，解密逻辑
+    在__attribute__((constructor (n)))修饰的方法init_getString()中实现了解密逻辑，
+    其原理是，通过读取/proc/pid/maps中的内容，找到so被映射到内存中的地址，
+    然后通过ehdr.e_entry和ehdr.e_shoff中的内容还原出decrypt section 的地址，
+    字节取反恢复，内存写回。
+    这样就做到了动态解密了
 
 
 

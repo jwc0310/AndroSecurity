@@ -8,6 +8,7 @@
 #include "android_log.h"
 #include "native-lib.h"
 #include "encrypt.h"
+#include "decrypt.h"
 
 //指定执行优先级  越小优先级越高
 void init_1() __attribute__((constructor (3)));
@@ -21,11 +22,10 @@ __attribute__((section (".encrypt"))) jstring getString(JNIEnv *env) {
 }
 
 void init_getString() {
-    unsigned long base;
     LOGE("init_getString");
-    base = getLibAddr();
-
-    LOGE("init_getString base: %lu", base);
+    std::string path = "/sdcard/Download/libnative_lib.so";
+    decrypt(path.c_str());
+    LOGE("init_getString base xxxx");
 }
 
 void init_1() {
@@ -47,8 +47,15 @@ extern "C" JNIEXPORT jint JNICALL
 Java_com_andy_androsecurity_jni_jni_encryptSO(
         JNIEnv* env,
         jobject ) {
-    std::string path = "/sdcard/Download/libnative_lib.so";
+    std::string path = "/sdcard/Download/libnative-lib.so";
     return encrypt(path.c_str());
+}
+
+extern "C" JNIEXPORT jint JNICALL
+Java_com_andy_androsecurity_jni_jni_decryptSO(
+        JNIEnv* env,
+        jobject) {
+    return 0;
 }
 
 extern "C" JNIEXPORT jstring JNICALL
@@ -56,35 +63,9 @@ Java_com_andy_androsecurity_jni_jni_stringFromJNI(
         JNIEnv* env,
         jobject /* this */) {
     std::string hello = "Hello from C++";
-    init_1();
-    init_getString();
-    init_2();
+//    init_1();
+//    init_getString();
+//    init_2();
     return env->NewStringUTF(hello.c_str());
-}
-
-unsigned long getLibAddr(){
-    unsigned long ret = 0;
-    char name[] = "libnative-lib.so";
-    char buf[4096], *temp;
-    int pid;
-    FILE *fp;
-    pid = getpid();
-    sprintf(buf, "/proc/%d/maps", pid);
-    fp = fopen(buf, "r");
-    if(fp == NULL)
-    {
-        LOGE("open failed");
-        goto _error;
-    }
-    while(fgets(buf, sizeof(buf), fp)){
-        if(strstr(buf, name)){
-            temp = strtok(buf, "-");
-            ret = strtoul(temp, NULL, 16);
-            break;
-        }
-    }
-_error:
-    fclose(fp);
-    return ret;
 }
 

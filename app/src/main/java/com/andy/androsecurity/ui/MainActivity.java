@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     TextView sampleText;
     @BindView(R.id.sample_encrypt)
     Button sampleEncrypt;
+    @BindView(R.id.sample_decrypt)
+    Button getSampleDecrypt;
     private Unbinder unbinder;
 
     @Override
@@ -40,6 +42,25 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.sample_encrypt)
     public void onViewClicked() {
         encryptSo();
+    }
+
+    @OnClick(R.id.sample_decrypt)
+    public void onView2Clicked() {
+        decryptSo();
+    }
+
+    private void decryptSo() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.e("Andy", "encry start");
+                int res = jni.decryptSo();
+                if (0 == res)
+                    Log.e("Andy", "encry complete");
+                else
+                    Log.e("Andy", "encry failed");
+            }
+        }).start();
     }
 
     private void encryptSo() {

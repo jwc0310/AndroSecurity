@@ -9,7 +9,6 @@
 #include <unistd.h>
 
 #include "android_log.h"
-#include "native-lib.h"
 
 int encrypt(const char *path) {
     char target_section[] = ".encrypt";
