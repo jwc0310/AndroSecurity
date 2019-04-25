@@ -1,4 +1,4 @@
-package com.andy.androsecurity.security;
+package com.andy.androsecurity.util.security;
 
 import android.text.TextUtils;
 

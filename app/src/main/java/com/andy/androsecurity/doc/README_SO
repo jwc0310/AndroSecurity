@@ -1,0 +1,33 @@
+1, section
+    __attribute__((section ("xxx")))
+    给变量和方法添加这个修饰后， 编译器讲把对应的代码或者数据放到指定的section中
+
+    __attribute__((section (".encrypt"))) jstring getString(JNIEnv* env) {
+        static const char* txt __attribute__((section (".encrypt2"))) = "Str from native";
+        return (*env)->NewStringUTF(env, txt);
+    };
+
+    给函数getString() 和 变量txt 添加该属性  分别指定不同的名称
+
+    指定section后，可以对section进行加密
+
+
+2，解密
+    解密时机
+       最早可以在load so之后，执行JNI_Onload之前.
+
+    __attribute__((constructor (n)))
+    文档中指出，constructor (priority)可以在后面指定一个优先级，数字越小，优先级越高，越先被执行.
+
+
+3, 加密逻辑
+    不同的人有不同的加密算法
+    本文算法：字节取反
+        encrypt.c中，核心逻辑
+        寻找encrypt的section， 然后字节取反写会，同时将一些值计算了写入ehdr.e_entry(这个对于正常的so是0值)
+        和ehdr.e_shoff（这个是section表的偏移量，修改这个值将导致找不到section，后面会看到加密效果），
+        这些值在解密的时候需要。
+
+
+
+
